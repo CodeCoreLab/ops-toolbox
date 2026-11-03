@@ -164,6 +164,21 @@
     flex-shrink: 0;
   }
 
+  .sidebar-footer a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0 6px;
+    transition: color 0.2s;
+  }
+
+  .sidebar-footer a:hover { color: #e2e8f0; }
+  .sidebar-footer svg { width: 13px; height: 13px; }
+
   /* Mobile hamburger */
   .mobile-toggle {
     display: none;
@@ -206,6 +221,39 @@
 
   .main-content header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
   .main-content header p { color: var(--text-secondary); font-size: 14px; }
+
+  /* 顶部操作条：返回工具站 / 源码 / 产品页 */
+  .topbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .topbar a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--text-secondary);
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: color 0.2s, border-color 0.2s, transform 0.2s;
+  }
+
+  .topbar a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .topbar svg { width: 14px; height: 14px; }
 
   .tools-grid {
     display: grid;
@@ -420,6 +468,8 @@
     .sidebar-overlay.open { display: block; }
     .main-content { margin-left: 0; padding: 16px; }
     .tools-grid { grid-template-columns: 1fr; }
+    .topbar { justify-content: flex-start; padding-left: 44px; }
+    .topbar a { font-size: 12px; padding: 6px 10px; }
   }
 </style>
 </head>
@@ -555,6 +605,20 @@
     </div>
     <div class="sidebar-footer">
       <p>双击 HTML 文件离线使用</p>
+      <div>
+        <a href="https://xmtooldev.gf.com.cn/" title="返回工具站首页">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+          工具站
+        </a>
+        <a href="https://xmtooldev.gf.com.cn/ops-toolbox/" title="产品介绍页">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2.5"/></svg>
+          介绍
+        </a>
+        <a href="https://github.com/CodeCoreLab/ops-toolbox" target="_blank" rel="noopener" title="GitHub 源码">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      </div>
     </div>
   </nav>
 
@@ -564,6 +628,21 @@
       <h1>⚙️ 运维轻量化工具箱</h1>
       <p>离线可用 | 单文件 | 开箱即用 | 敏感数据不离线</p>
     </header>
+
+    <div class="topbar">
+      <a href="https://xmtooldev.gf.com.cn/" title="返回工具站首页">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        返回工具站
+      </a>
+      <a href="https://xmtooldev.gf.com.cn/ops-toolbox/" title="产品介绍页">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2.5"/></svg>
+        产品介绍
+      </a>
+      <a href="https://github.com/CodeCoreLab/ops-toolbox" target="_blank" rel="noopener" title="GitHub 源码">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
+        GitHub 源码
+      </a>
+    </div>
 
     <div class="tools-grid">
 
