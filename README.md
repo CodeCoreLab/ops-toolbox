@@ -64,8 +64,22 @@ ops-toolbox/
 ├── README.md                # 本文件
 ├── LICENSE                  # MIT 许可
 ├── build_offline_zip.py     # 离线包构建脚本（可复现打包）
+├── push_via_api.py          # GitHub Contents API 兜底推送（git 通道异常时使用）
+├── tests/                   # Playwright E2E 回归测试
+│   ├── e2e_online.js        #   线上站点回归（43 项断言）
+│   ├── e2e_offline.js       #   离线包自包含回归（21 项断言）
+│   └── README.md            #   环境准备与运行说明
 └── ops-toolbox-offline.zip  # 离线打包版本
 ```
+
+## 回归测试
+
+```bash
+node tests/e2e_online.js    # 线上站点：导航元素 + 全站 GitHub 按钮审计
+node tests/e2e_offline.js   # 离线包：file:// 打开，校验自包含性
+```
+
+详见 [tests/README.md](tests/README.md)。
 
 ## 离线使用
 
