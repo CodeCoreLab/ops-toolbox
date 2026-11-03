@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>运维轻量化工具箱 — 离线可用 | 开箱即用</title>
+<meta name="description" content="专为 DevOps / SRE / 运维工程师打造的离线工具箱，20+ 高频工具集成，Base64、哈希、JSON、时间戳、密码生成、CIDR 计算，敏感数据不离线。">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-alt: #f9fafb;
+    --text: #111827;
+    --text-secondary: #4b5563;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-light: #dbeafe;
+    --radius: 10px;
+    --max-width: 960px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  /* Navigation */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo svg { flex: none; }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    padding: 7px 18px;
+    background: var(--accent);
+    color: #fff !important;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 14px;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .nav-cta:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+  }
+
+  /* Sections */
+  section {
+    padding: 72px 24px;
+  }
+
+  .section-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .section-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin-bottom: 40px;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 80px 24px 72px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 560px;
+    margin: 0 auto 32px;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 12px 24px;
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: #fff;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Features */
+  #features { background: var(--bg-alt); }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .feature-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    transform: translateY(-2px);
+  }
+
+  .feature-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 18px;
+  }
+
+  .feature-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .feature-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Tools */
+  .tools-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .tool-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .tool-item:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  .tool-icon {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tool-content h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .tool-content p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* How-to */
+  #how-to { background: var(--bg-alt); }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .step {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .step:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  }
+
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+
+  .step h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .step p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* FAQ */
+  .faq-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .faq-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    transition: border-color 0.2s ease;
+  }
+
+  .faq-item:hover {
+    border-color: #d1d5db;
+  }
+
+  .faq-item h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .faq-item p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* CTA */
+  .cta-section {
+    background: var(--bg-alt);
+    text-align: center;
+    padding: 64px 24px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cta-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .cta-section p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  /* Footer */
+  footer {
+    padding: 32px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    section { padding: 48px 20px; }
+    .hero { padding: 56px 20px 48px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .tools-list { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="7" fill="#2563eb"/>
+          <path d="M16 8v8l5 5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        运维工具箱
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">核心功能</a></li>
+        <li><a href="#tools">工具清单</a></li>
+        <li><a href="#how-to">使用方式</a></li>
+        <li><a href="#faq">常见问题</a></li>
+        <li><a href="#cta" class="nav-cta">进入工具箱</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="section-inner reveal">
+      <h1>运维工程师的轻量化工具箱</h1>
+      <p>20+ 高频工具集成于单文件，Base64、哈希、JSON、时间戳、CIDR、正则、JWT...离线可用，数据不离线，双击即开。</p>
+      <div class="hero-buttons">
+        <a href="#cta" class="btn btn-primary">开始使用</a>
+        <a href="#tools" class="btn btn-secondary">查看工具清单</a>
+        <a href="ops-toolbox-offline.zip" class="btn btn-secondary" download>下载离线版</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="section-inner">
+      <h2 class="section-title reveal">为什么选择运维轻量化工具箱</h2>
+      <p class="section-desc reveal">告别工具分散、在线泄密、频繁切换的痛点。一个页面，覆盖运维日常 90% 高频场景。</p>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3>离线优先，数据安全</h3>
+          <p>所有计算在浏览器本地完成，敏感内容完全不出本机，无需担心第三方服务器泄露风险。</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <h3>即开即用，零配置</h3>
+          <p>纯 HTML 单文件，双击打开即可使用。无需安装、无需注册、无需网络，U 盘携带，任意电脑即插即用。</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <h3>20+ 工具集成</h3>
+          <p>编解码、哈希、JSON、时间戳、正则、CIDR、端口速查、命令生成...高频场景全覆盖，减少频繁切换工具的成本。</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <h3>响应式设计</h3>
+          <p>完美适配桌面端与移动端，侧边栏导航 + 分类清晰，手机排查问题时也能快速调用工具。</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <h3>现代轻盈界面</h3>
+          <p>采用现代设计语言，浅色背景 + 微动效，长时间使用视觉舒适，提升日常工作效率。</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          </div>
+          <h3>完全免费开源</h3>
+          <p>基于 DevHub 等开源项目二次开发，无广告、无付费墙、无数据收集，可自由修改与私有化部署。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tools -->
+  <section id="tools">
+    <div class="section-inner">
+      <h2 class="section-title reveal">覆盖运维日常高频场景</h2>
+      <p class="section-desc reveal">从文本处理到网络计算，从安全加密到命令生成，一站式解决。</p>
+      <div class="tools-list">
+        <div class="tool-item reveal">
+          <span class="tool-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+          </span>
+          <div class="tool-content">
+            <h4>Base64 / URL 编解码</h4>
+            <p>支持中文及特殊字符，一键转换，解决接口调试、配置解析中的编解码需求。</p>
+          </div>
+        </div>
+        <div class="tool-item reveal">
+          <span class="tool-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </span>
+          <div class="tool-content">
+            <h4>MD5 / SHA 哈希计算</h4>
+            <p>浏览器原生 WebCrypto 实现，支持 MD5、SHA-1、SHA-256、SHA-512，文件完整性校验秒出。</p>
+          </div>
+        </div>
+        <div class="tool-item reveal">
+          <span class="tool-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </span>
+          <div class="tool-content">
+            <h4>JSON 格式化 / 压缩</h4>
+            <p>美化、压缩、转义、去转义、格式校验，配合语法高亮，排查接口响应一目了然。</p>
+          </div>
+        </div>
+        <div class="tool-item reveal">
+          <span class="tool-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          <div class="tool-content">
+            <h4>时间戳转换</h4>
+            <p>Unix 时间戳 ↔ 本地/UTC/ISO 时间互转，支持毫秒自动识别，日志排查必备。</p>
+          </div>
+        </div>
+        <div class="tool-item reveal">
+          <span class="tool-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/></svg>
+          </span>
+          <div class="tool-content">
+            <h4>IP / CIDR 计算</h4>
+            <p>输入 CIDR 自动计算网络地址、广播地址、可用 IP 范围，网络规划与故障排查利器。</p>
+          </div>
+        </div>
+        <div class="tool-item reveal">
+          <span class="tool-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          </span>
+          <div class="tool-content">
+            <h4>JWT 令牌解析</h4>
+            <p>解码 Header / Payload，检测过期时间与签名状态，接口认证调试快速定位问题。</p>
+          </div>
+        </div>
+        <div class="tool-item reveal">
+          <span class="tool-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          </span>
+          <div class="tool-content">
+            <h4>密码 / UUID 生成</h4>
+            <p>可配置长度与字符类型的密码生成器，支持 UUID v4/v1，临时账号、测试数据随手生成。</p>
+          </div>
+        </div>
+        <div class="tool-item reveal">
+          <span class="tool-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </span>
+          <div class="tool-content">
+            <h4>常用运维命令生成</h4>
+            <p>Linux / Docker / K8s / Nginx 高频命令一键复制，减少记忆负担，提升响应速度。</p>
+          </div>
+        </div>
+        <div class="tool-item reveal">
+          <span class="tool-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <div class="tool-content">
+            <h4>正则表达式测试</h4>
+            <p>实时匹配测试，立即显示匹配结果与数量，日志过滤、配置校验效率倍增。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How to -->
+  <section id="how-to">
+    <div class="section-inner">
+      <h2 class="section-title reveal">使用方式</h2>
+      <p class="section-desc reveal">无需安装，无需注册，三步开始使用。</p>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="step-num">1</div>
+          <h4>打开页面</h4>
+          <p>在浏览器中打开工具箱页面，或下载 HTML 文件到本地。</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">2</div>
+          <h4>选择工具</h4>
+          <p>通过左侧分类导航或工具清单，快速定位需要的工具模块。</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">3</div>
+          <h4>输入获取结果</h4>
+          <p>粘贴或输入内容，一键获取结果，支持一键复制到剪贴板。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="section-inner">
+      <h2 class="section-title reveal">常见问题</h2>
+      <div class="faq-list" style="margin-top: 32px;">
+        <div class="faq-item reveal">
+          <h4>工具箱是否需要联网？</h4>
+          <p>不需要。所有计算都在浏览器本地完成，首次打开后即可离线使用，敏感数据不会上传到任何服务器。</p>
+        </div>
+        <div class="faq-item reveal">
+          <h4>支持哪些浏览器？</h4>
+          <p>支持所有现代浏览器：Chrome、Edge、Firefox、Safari 的最新版本。推荐使用 Chrome 或 Edge 获得最佳体验。</p>
+        </div>
+        <div class="faq-item reveal">
+          <h4>数据会上传到服务器吗？</h4>
+          <p>不会。工具箱采用纯前端实现，所有处理都在您的浏览器本地完成，JWT、密钥、接口数据等内容完全不出本机。</p>
+        </div>
+        <div class="faq-item reveal">
+          <h4>可以添加到收藏夹吗？</h4>
+          <p>可以。将页面保存到浏览器收藏夹，或下载 HTML 文件到本地，双击即可运行，无需服务器环境。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta" class="cta-section">
+    <div class="reveal">
+      <h2>准备好提升运维效率了吗？</h2>
+      <p>无需注册，无需下载，打开浏览器即可使用全部 20+ 工具。</p>
+      <a href="tool.html" class="btn btn-primary" style="font-size: 16px; padding: 14px 32px;">
+        进入工具箱
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>运维轻量化工具箱 · 离线可用 · 敏感数据不离线</p>
+    <p style="margin-top: 6px;">基于 DevHub 等开源项目二次开发 · 适合 DevOps / SRE / 运维工程师</p>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 10);
+    });
+  </script>
+</body>
+</html>
