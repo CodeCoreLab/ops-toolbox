@@ -62,6 +62,8 @@ ops-toolbox/
 ├── tool.html                # 工具箱本体（单文件，离线核心）
 ├── changelog.html           # 更新日志
 ├── README.md                # 本文件
+├── LICENSE                  # MIT 许可
+├── build_offline_zip.py     # 离线包构建脚本（可复现打包）
 └── ops-toolbox-offline.zip  # 离线打包版本
 ```
 
